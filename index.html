@@ -1,0 +1,283 @@
+<script>
+	let moedas = [1, 5, 10, 25, 50, 100];
+	let q_moedas = [0, 0, 0, 0, 0, 0];
+	let m_len = moedas.length;
+
+	let papel = [2, 5, 10, 20, 50, 100];
+	let q_papel = [0, 0, 0, 0, 0, 0];
+	let p_len = papel.length;
+
+	function findMin() {
+		var cliente = document.getElementById("cliente").value;
+		var compra = document.getElementById("compra").value;
+
+		console.log(cliente);
+
+		for (let i = p_len - 1; i >= 0; i--) {
+			var q = document.getElementById(`p_${i}`).value;
+			if (q == "") {
+				document.getElementById("result").innerHTML =
+					"Todos os campos devem ser preenchidos";
+				return;
+			}
+			q_papel[i] = q;
+		}
+
+		for (let i = m_len - 1; i >= 0; i--) {
+			var q = document.getElementById(`m_${i}`).value;
+			if (q == "") {
+				document.getElementById("result").innerHTML =
+					"Todos os campos devem ser preenchidos";
+				return;
+			}
+			q_moedas[i] = q;
+		}
+
+		if (compra == "" || cliente == "") {
+			document.getElementById("result").innerHTML =
+				"Todos os campos devem ser preenchidos";
+			return;
+		}
+
+		if (parseInt(cliente) < parseInt(compra)) {
+			document.getElementById("result").innerHTML =
+				"O cliente nao pagou a conta";
+			return;
+		}
+
+		if (cliente == compra) {
+			document.getElementById("result").innerHTML = "Não há troco";
+			return;
+		}
+
+		let troco = cliente - compra;
+
+		let p_troco = [];
+		for (let i = p_len - 1; i >= 0; i--) {
+			while (troco >= papel[i] && q_papel[i] > 0) {
+				troco -= papel[i];
+				q_papel[i]--;
+				p_troco.push(papel[i]);
+			}
+		}
+
+		resto_p = parseInt(troco) * 100;
+		resto_m = (troco % 1) * 100;
+		troco = Math.round(resto_p + resto_m);
+
+		let m_troco = [];
+
+		for (let i = m_len - 1; i >= 0; i--) {
+			while (troco >= moedas[i] && q_moedas[i] > 0) {
+				troco -= moedas[i];
+				q_moedas[i]--;
+				m_troco.push(moedas[i]);
+			}
+		}
+
+		res = "notas: ";
+		for (let i = 0; i < p_troco.length; i++) {
+			res += p_troco[i] + "  ";
+		}
+		res += "\n\nmoedas: ";
+		for (let i = 0; i < m_troco.length; i++) {
+			res += m_troco[i] + "  ";
+		}
+
+		if (troco > 4) {
+			res += `\n\nvoce nao tem troco suficiente, ficou devendo: ${
+				troco / 100
+			}`;
+		}
+
+		document.getElementById("result").innerHTML = res;
+	}
+
+	document.addEventListener("keydown", (e) => {
+		if (e.which == 13) {
+			findMin();
+		}
+	});
+</script>
+
+<!DOCTYPE html>
+<html lang="pt-br">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="stylesheet" href="styles.css" />
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+			rel="stylesheet"
+		/>
+		<title>PA-3</title>
+	</head>
+	<body>
+		<div class="container">
+			<p>Quantidade de notas no caixa</p>
+			<form class="q_form">
+				<div class="q_div">
+					<label for="R$2">R$2</label>
+					<input
+						class="q_inp"
+						id="p_0"
+						placeholder="R$2"
+						type="number"
+						value="5"
+					/>
+				</div>
+
+				<div class="q_div">
+					<label for="R$5">R$5</label>
+					<input
+						class="q_inp"
+						id="p_1"
+						placeholder="R$5"
+						type="number"
+						value="5"
+					/>
+				</div>
+
+				<div class="q_div">
+					<label for="R$10">R$10</label>
+					<input
+						class="q_inp"
+						id="p_2"
+						placeholder="R$10"
+						type="number"
+						value="5"
+					/>
+				</div>
+
+				<div class="q_div">
+					<label for="R$20">R$20</label>
+					<input
+						class="q_inp"
+						id="p_3"
+						placeholder="R$20"
+						type="number"
+						value="5"
+					/>
+				</div>
+
+				<div class="q_div">
+					<label for="R$50">R$50</label>
+					<input
+						class="q_inp"
+						id="p_4"
+						placeholder="R$50"
+						type="number"
+						value="5"
+					/>
+				</div>
+
+				<div class="q_div">
+					<label for="R$100">R$100</label>
+					<input
+						class="q_inp"
+						id="p_5"
+						placeholder="R$100"
+						type="number"
+						value="5"
+					/>
+				</div>
+			</form>
+
+			<p>Quantidade de moedas no caixa</p>
+			<form class="q_form">
+				<div class="q_div">
+					<label for="R$0.01">R$0.05</label>
+					<input
+						class="q_inp"
+						id="m_0"
+						placeholder="R$0.01"
+						type="number"
+						value="5"
+					/>
+				</div>
+
+				<div class="q_div">
+					<label for="R$0.05">R$0.05</label>
+					<input
+						class="q_inp"
+						id="m_1"
+						placeholder="R$0.05"
+						type="number"
+						value="5"
+					/>
+				</div>
+
+				<div class="q_div">
+					<label for="R$0.10">R$0.10</label>
+					<input
+						class="q_inp"
+						id="m_2"
+						placeholder="R$0.10"
+						type="number"
+						value="5"
+					/>
+				</div>
+
+				<div class="q_div">
+					<label for="R$0.25">R$0.25</label>
+					<input
+						class="q_inp"
+						id="m_3"
+						placeholder="R$0.25"
+						type="number"
+						value="5"
+					/>
+				</div>
+
+				<div class="q_div">
+					<label for="R$0.50">R$0.50</label>
+					<input
+						class="q_inp"
+						id="m_4"
+						placeholder="R$0.50"
+						type="number"
+						value="5"
+					/>
+				</div>
+
+				<div class="q_div">
+					<label for="R$1.00">R$1.00</label>
+					<input
+						class="q_inp"
+						id="m_5"
+						placeholder="R$1.00"
+						type="number"
+						value="5"
+					/>
+				</div>
+			</form>
+
+			<form class="inp-container">
+				<input
+					placeholder="valor da compra"
+					type="number"
+					id="compra"
+					class="inp"
+				/>
+				<input
+					placeholder="valor entregue pelo cliente"
+					type="number"
+					id="cliente"
+					class="inp"
+				/>
+			</form>
+
+			<input
+				type="button"
+				class="btn"
+				value="Calcular"
+				onclick="findMin()"
+			/>
+			<div class="result">
+				<p id="result"></p>
+			</div>
+		</div>
+	</body>
+</html>
